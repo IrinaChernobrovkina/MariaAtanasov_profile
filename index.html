@@ -4,6 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Maria Atanasov — Карта потенциала</title>
+
+<!-- OG Meta -->
+<meta property="og:title" content="Maria Atanasov — Навигационная карта потенциала">
+<meta property="og:description" content="Визионер. Вдохновитель. Творец с социальной смелостью и глубокой эмпатией.">
+<meta property="og:type" content="profile">
+<meta name="description" content="Навигационная карта потенциала: творческий интеллект, социальная смелость, эмпатия и профессиональные траектории.">
+
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:wght@300;400&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -38,6 +45,104 @@
     line-height: 1.7;
     -webkit-font-smoothing: antialiased;
   }
+
+  /* ─── SKIP LINK (A11Y) ─── */
+  .skip-link {
+    position: absolute;
+    top: -100%;
+    left: 1rem;
+    background: var(--navy);
+    color: var(--warm);
+    padding: 0.5rem 1rem;
+    font-size: 0.85rem;
+    z-index: 1000;
+    border-radius: 0 0 4px 4px;
+    transition: top 0.2s;
+  }
+  .skip-link:focus {
+    top: 0;
+  }
+
+  /* ─── DOT NAVIGATION ─── */
+  .dot-nav {
+    position: fixed;
+    right: 1.5rem;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+  }
+
+  .dot-nav.visible {
+    opacity: 1;
+  }
+
+  .dot-nav a {
+    display: block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: rgba(20, 30, 43, 0.15);
+    transition: background 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+    position: relative;
+  }
+
+  .dot-nav a:hover {
+    background: var(--gold);
+    transform: scale(1.4);
+  }
+
+  .dot-nav a.active {
+    background: var(--gold);
+    box-shadow: 0 0 0 3px rgba(196, 154, 60, 0.25);
+  }
+
+  .dot-nav a .dot-tooltip {
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: var(--navy);
+    color: var(--warm);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.55rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    padding: 0.3rem 0.6rem;
+    border-radius: 2px;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease, right 0.2s ease;
+  }
+
+  .dot-nav a:hover .dot-tooltip {
+    opacity: 1;
+    right: 24px;
+  }
+
+  /* ─── SCROLL REVEAL ─── */
+  .reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+
+  .reveal.revealed {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .reveal-delay-1 { transition-delay: 0.1s; }
+  .reveal-delay-2 { transition-delay: 0.2s; }
+  .reveal-delay-3 { transition-delay: 0.3s; }
+  .reveal-delay-4 { transition-delay: 0.4s; }
+  .reveal-delay-5 { transition-delay: 0.5s; }
 
   /* ─── HERO ─── */
   .hero {
@@ -165,7 +270,7 @@
   }
 
   /* ─── SECTIONS ─── */
-  section {
+  .main-content section {
     padding: 6rem 2rem;
     max-width: 1100px;
     margin: 0 auto;
@@ -203,6 +308,11 @@
     margin-bottom: 3rem;
     position: relative;
     box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    transition: box-shadow 0.4s ease;
+  }
+
+  .essence:hover {
+    box-shadow: 0 4px 20px rgba(0,0,0,0.07);
   }
 
   .essence::before {
@@ -232,13 +342,28 @@
   .superskill-wrap {
     background: var(--navy);
     padding: 5rem 2rem;
-    margin: 0 -2rem;
+    width: 100vw;
+    margin-left: calc(-50vw + 50%);
     text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .superskill-wrap::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(ellipse at 50% 50%, rgba(196, 154, 60, 0.06) 0%, transparent 70%);
+    pointer-events: none;
   }
 
   .superskill-inner {
     max-width: 750px;
     margin: 0 auto;
+    position: relative;
   }
 
   .superskill-label {
@@ -262,7 +387,7 @@
   .superskill-desc {
     margin-top: 2rem;
     font-size: 0.95rem;
-    color: rgba(245, 237, 224, 0.5);
+    color: rgba(245, 237, 224, 0.55);
     line-height: 1.7;
     max-width: 600px;
     margin-left: auto;
@@ -282,25 +407,48 @@
     padding: 2.5rem;
     border-radius: 2px;
     position: relative;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                box-shadow 0.4s ease;
     box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    overflow: hidden;
+  }
+
+  .talent-card::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(to right, var(--gold), var(--teal));
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   }
 
   .talent-card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 8px 25px rgba(0,0,0,0.06);
+    transform: translateY(-4px);
+    box-shadow: 0 12px 30px rgba(0,0,0,0.08);
+  }
+
+  .talent-card:hover::after {
+    transform: scaleX(1);
   }
 
   .talent-card .number {
     font-family: 'Cormorant Garamond', serif;
     font-size: 3rem;
     font-weight: 300;
-    color: var(--gold-pale);
     position: absolute;
     top: 1rem;
     right: 1.5rem;
     line-height: 1;
     color: rgba(196, 154, 60, 0.15);
+    transition: color 0.3s ease;
+  }
+
+  .talent-card:hover .number {
+    color: rgba(196, 154, 60, 0.3);
   }
 
   .talent-card h3 {
@@ -333,6 +481,11 @@
     border-radius: 1px;
     background: var(--teal-soft);
     color: var(--teal);
+    transition: transform 0.2s ease;
+  }
+
+  .tag:hover {
+    transform: translateY(-1px);
   }
 
   .tag.gold {
@@ -357,6 +510,14 @@
     gap: 1.5rem;
     padding: 2rem 0;
     border-bottom: 1px solid rgba(0,0,0,0.06);
+    transition: background 0.3s ease;
+    border-radius: 2px;
+  }
+
+  .paradox:hover {
+    background: rgba(255, 255, 255, 0.5);
+    padding-left: 1rem;
+    padding-right: 1rem;
   }
 
   .paradox:last-child { border-bottom: none; }
@@ -370,6 +531,15 @@
   }
 
   .paradox-side:first-child { text-align: right; }
+
+  .paradox-meta {
+    display: block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.05em;
+    color: var(--text-muted);
+    margin-top: 0.3rem;
+  }
 
   .paradox-connector {
     font-family: 'JetBrains Mono', monospace;
@@ -393,7 +563,8 @@
   /* ─── NUMBERS ─── */
   .numbers-strip {
     background: var(--white);
-    margin: 0 -2rem;
+    width: 100vw;
+    margin-left: calc(-50vw + 50%);
     padding: 4rem 2rem;
   }
 
@@ -401,9 +572,17 @@
     max-width: 1100px;
     margin: 0 auto;
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
     gap: 2.5rem;
     text-align: center;
+  }
+
+  .number-item {
+    transition: transform 0.3s ease;
+  }
+
+  .number-item:hover {
+    transform: translateY(-3px);
   }
 
   .number-item .value {
@@ -440,6 +619,14 @@
     gap: 1.5rem;
     padding: 2rem 0;
     border-bottom: 1px solid rgba(0,0,0,0.06);
+    transition: background 0.3s ease;
+    border-radius: 2px;
+  }
+
+  .trajectory:hover {
+    background: rgba(255, 255, 255, 0.5);
+    padding-left: 1rem;
+    padding-right: 1rem;
   }
 
   .trajectory:last-child { border-bottom: none; }
@@ -466,12 +653,40 @@
     color: var(--text-soft);
   }
 
-  .trajectory .match {
+  .trajectory-match {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.4rem;
+    min-width: 100px;
+  }
+
+  .trajectory-match .match-value {
     font-family: 'JetBrains Mono', monospace;
     font-size: 0.85rem;
     color: var(--teal);
     font-weight: 500;
     white-space: nowrap;
+  }
+
+  .match-bar {
+    width: 100%;
+    height: 3px;
+    background: rgba(45, 140, 140, 0.12);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  .match-bar-fill {
+    height: 100%;
+    background: linear-gradient(to right, var(--teal), var(--gold));
+    border-radius: 2px;
+    width: 0%;
+    transition: width 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+
+  .trajectory.revealed .match-bar-fill {
+    /* width set via inline style */
   }
 
   /* ─── BLINDSPOTS ─── */
@@ -488,6 +703,13 @@
     border-radius: 2px;
     border-top: 3px solid var(--coral);
     box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+  }
+
+  .blindspot:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.07);
+    border-top-color: var(--gold);
   }
 
   .blindspot h4 {
@@ -496,6 +718,11 @@
     font-weight: 600;
     color: var(--coral);
     margin-bottom: 0.6rem;
+    transition: color 0.3s ease;
+  }
+
+  .blindspot:hover h4 {
+    color: var(--navy);
   }
 
   .blindspot p {
@@ -508,13 +735,28 @@
   .north-star {
     background: var(--navy);
     padding: 6rem 2rem;
-    margin: 0 -2rem;
+    width: 100vw;
+    margin-left: calc(-50vw + 50%);
     text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .north-star::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(ellipse at 50% 0%, rgba(196, 154, 60, 0.08) 0%, transparent 60%);
+    pointer-events: none;
   }
 
   .north-star-inner {
     max-width: 700px;
     margin: 0 auto;
+    position: relative;
   }
 
   .north-star .star {
@@ -522,6 +764,12 @@
     color: var(--gold);
     margin-bottom: 2rem;
     opacity: 0.6;
+    animation: starGlow 4s ease-in-out infinite alternate;
+  }
+
+  @keyframes starGlow {
+    0% { opacity: 0.4; text-shadow: 0 0 10px rgba(196, 154, 60, 0); }
+    100% { opacity: 0.9; text-shadow: 0 0 30px rgba(196, 154, 60, 0.3); }
   }
 
   .north-star blockquote {
@@ -536,7 +784,7 @@
 
   .north-star .coda {
     font-size: 0.9rem;
-    color: rgba(245, 237, 224, 0.4);
+    color: rgba(245, 237, 224, 0.45);
     line-height: 1.7;
     max-width: 500px;
     margin: 0 auto;
@@ -555,292 +803,580 @@
 
   /* ─── RESPONSIVE ─── */
   @media (max-width: 768px) {
-    section { padding: 4rem 1.5rem; }
+    .main-content section { padding: 4rem 1.5rem; }
     .essence { padding: 2rem; }
+
+    .dot-nav { display: none; }
+
     .paradox {
       grid-template-columns: 1fr;
-      gap: 0.5rem;
+      gap: 0.3rem;
     }
     .paradox-side:first-child { text-align: left; }
-    .paradox-connector { margin: 0.5rem 0; }
+    .paradox-connector {
+      margin: 0.3rem 0;
+      position: relative;
+      padding-left: 1.5rem;
+    }
+    .paradox-connector::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 50%;
+      width: 1rem;
+      height: 1px;
+      background: var(--gold);
+    }
+    .paradox:hover {
+      padding-left: 0;
+      padding-right: 0;
+    }
+
     .trajectory {
       grid-template-columns: 40px 1fr;
     }
-    .trajectory .match {
+    .trajectory-match {
       grid-column: 2;
+      align-items: flex-start;
+      min-width: unset;
     }
+    .trajectory:hover {
+      padding-left: 0;
+      padding-right: 0;
+    }
+
     .superskill-wrap, .numbers-strip, .north-star {
-      margin: 0 -1.5rem;
+      margin-left: calc(-50vw + 50%);
       padding-left: 1.5rem;
       padding-right: 1.5rem;
+    }
+  }
+
+  /* ─── PRINT ─── */
+  @media print {
+    * { animation: none !important; transition: none !important; }
+
+    html { overflow: visible; }
+
+    body {
+      background: white;
+      color: #1a1a1a;
+      font-size: 11pt;
+      line-height: 1.5;
+    }
+
+    .hero {
+      min-height: auto;
+      padding: 3rem 0;
+      background: #141e2b !important;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+
+    .dot-nav,
+    .scroll-hint,
+    .skip-link { display: none !important; }
+
+    .reveal {
+      opacity: 1 !important;
+      transform: none !important;
+    }
+
+    .main-content section {
+      padding: 2rem 0;
+      page-break-inside: avoid;
+    }
+
+    .superskill-wrap,
+    .numbers-strip,
+    .north-star {
+      width: auto;
+      margin-left: 0;
+      padding-left: 0;
+      padding-right: 0;
+      page-break-inside: avoid;
+    }
+
+    .superskill-wrap,
+    .north-star {
+      background: #141e2b !important;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+
+    .talent-card,
+    .blindspot {
+      box-shadow: none;
+      border: 1px solid #e0e0e0;
+      page-break-inside: avoid;
+    }
+
+    .talent-card:hover,
+    .blindspot:hover,
+    .paradox:hover,
+    .trajectory:hover {
+      transform: none;
+      box-shadow: none;
+      background: transparent;
+      padding-left: 0;
+      padding-right: 0;
+    }
+
+    .match-bar-fill {
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+
+    footer {
+      padding-top: 1rem;
+      border-top: 1px solid #e0e0e0;
     }
   }
 </style>
 </head>
 <body>
 
+<!-- A11Y: Skip link -->
+<a href="#main" class="skip-link">Перейти к содержимому</a>
+
+<!-- ─── DOT NAVIGATION ─── -->
+<nav class="dot-nav" aria-label="Навигация по секциям">
+  <a href="#hero"><span class="dot-tooltip">Начало</span></a>
+  <a href="#essence"><span class="dot-tooltip">Квинтэссенция</span></a>
+  <a href="#superskill"><span class="dot-tooltip">Супер-навык</span></a>
+  <a href="#talents"><span class="dot-tooltip">Таланты</span></a>
+  <a href="#numbers"><span class="dot-tooltip">Цифры</span></a>
+  <a href="#paradoxes"><span class="dot-tooltip">Парадоксы</span></a>
+  <a href="#trajectories"><span class="dot-tooltip">Траектории</span></a>
+  <a href="#blindspots"><span class="dot-tooltip">Зоны внимания</span></a>
+  <a href="#northstar"><span class="dot-tooltip">North Star</span></a>
+</nav>
+
 <!-- ═══ HERO ═══ -->
-<div class="hero">
+<header class="hero" id="hero">
   <div class="hero-content">
     <div class="hero-label">Навигационная карта потенциала</div>
     <h1 class="hero-name">Maria <em>Atanasov</em></h1>
-    <div class="hero-line"></div>
+    <div class="hero-line" role="presentation"></div>
     <p class="hero-subtitle">Визионер. Вдохновитель. Творец с социальной смелостью и глубокой эмпатией.</p>
   </div>
-  <div class="scroll-hint">
+  <div class="scroll-hint" aria-hidden="true">
     <span>Discover</span>
     <div class="arrow"></div>
   </div>
-</div>
+</header>
 
-<!-- ═══ ESSENCE ═══ -->
-<section>
-  <div class="section-label">Квинтэссенция</div>
-  <h2 class="section-title">Кто она <em>по своей сути</em></h2>
+<!-- ═══ MAIN CONTENT ═══ -->
+<main class="main-content" id="main">
 
-  <div class="essence">
-    <p>
-      Мария — человек, который <strong>придумывает концепцию, зажигает команду, запускает проект</strong> и идёт дальше, к следующему вызову. Редкое сочетание: глубокая эмпатия и искренняя забота о ближних <strong>(Altruism 100%)</strong> уживаются с амбицией, стремлением к влиянию и нежеланием быть «одной из многих». Она не тот человек, который будет тихо работать в углу над идеальным отчётом. Она — тот, кто <strong>создаёт направления, зажигает людей и делает мир вокруг себя ярче.</strong>
-    </p>
-  </div>
-</section>
+  <!-- ═══ ESSENCE ═══ -->
+  <section id="essence" aria-labelledby="essence-title">
+    <div class="section-label reveal">Квинтэссенция</div>
+    <h2 class="section-title reveal reveal-delay-1" id="essence-title">Кто она <em>по своей сути</em></h2>
 
-<!-- ═══ SUPERSKILL ═══ -->
-<div class="superskill-wrap">
-  <div class="superskill-inner">
-    <div class="superskill-label">Главный супер-навык</div>
-    <div class="superskill-text">
-      Вдохновляющее влияние через творческое видение
+    <div class="essence reveal reveal-delay-2">
+      <p>
+        Мария — человек, который <strong>придумывает концепцию, зажигает команду, запускает проект</strong> и идёт дальше, к следующему вызову. Редкое сочетание: глубокая эмпатия и искренняя забота о ближних <strong>(Altruism 100%)</strong> уживаются с амбицией, стремлением к влиянию и нежеланием быть «одной из многих». Она не тот человек, который будет тихо работать в углу над идеальным отчётом. Она — тот, кто <strong>создаёт направления, зажигает людей и делает мир вокруг себя ярче.</strong>
+      </p>
     </div>
-    <p class="superskill-desc">
-      Способность одновременно генерировать яркие, нестандартные идеи — и зажигать ими других людей. Openness даёт контент. Social Boldness, Assertiveness и Warmth дают канал доставки. Этот навык невозможно «выучить на курсах» — он встроен в архитектуру личности.
-    </p>
-  </div>
-</div>
+  </section>
 
-<!-- ═══ CORE TALENTS ═══ -->
-<section>
-  <div class="section-label">Ядро таланта</div>
-  <h2 class="section-title">Пять <em>фундаментальных</em> характеристик</h2>
-
-  <div class="talent-grid">
-    <div class="talent-card">
-      <div class="number">01</div>
-      <h3>Творческий интеллект с эстетическим вкусом</h3>
-      <p>Видит мир через призму формы, красоты и идей. Генерирует нестандартные решения и облекает их в привлекательную форму.</p>
-      <div class="tags">
-        <span class="tag">Aesthetics 92%</span>
-        <span class="tag gold">Creativity 4.8</span>
-        <span class="tag">Openness 77%</span>
+  <!-- ═══ SUPERSKILL ═══ -->
+  <div class="superskill-wrap" id="superskill">
+    <div class="superskill-inner">
+      <div class="superskill-label reveal">Главный супер-навык</div>
+      <div class="superskill-text reveal reveal-delay-1">
+        Вдохновляющее влияние через творческое видение
       </div>
-    </div>
-
-    <div class="talent-card">
-      <div class="number">02</div>
-      <h3>Социальная смелость и лидерское влияние</h3>
-      <p>Не боится аудитории, легко берёт слово и естественно стремится к лидерской позиции. Влияет через энергию и убеждение.</p>
-      <div class="tags">
-        <span class="tag gold">Social Boldness 4.8</span>
-        <span class="tag">Assertiveness 70%</span>
-        <span class="tag coral">Power 5.3</span>
-      </div>
-    </div>
-
-    <div class="talent-card">
-      <div class="number">03</div>
-      <h3>Эмпатия, направленная на действие</h3>
-      <p>Не абстрактная «любовь к человечеству», а конкретная, адресная помощь тем, кто рядом. Вдохновляет, развивает и поддерживает.</p>
-      <div class="tags">
-        <span class="tag coral">Altruism 100%</span>
-        <span class="tag">Warmth 75%</span>
-        <span class="tag gold">Social 18</span>
-      </div>
-    </div>
-
-    <div class="talent-card">
-      <div class="number">04</div>
-      <h3>Потребность в стимуляции и новизне</h3>
-      <p>Быстро теряет интерес к освоенному. Нуждается в постоянной подпитке новыми задачами, проектами, средами. Это мотор.</p>
-      <div class="tags">
-        <span class="tag coral">Stimulation 5.7</span>
-        <span class="tag">Actions 82%</span>
-        <span class="tag gold">Prudence 2.0</span>
-      </div>
-    </div>
-
-    <div class="talent-card">
-      <div class="number">05</div>
-      <h3>Аналитическая база выше среднего</h3>
-      <p>IQ 122 — способность работать со сложными концепциями, быстро обучаться и видеть паттерны. Доступ к интеллектуально ёмким профессиям.</p>
-      <div class="tags">
-        <span class="tag">IQ 122</span>
-        <span class="tag">Ideas 82%</span>
-        <span class="tag gold">51/60 Raven's</span>
-      </div>
+      <p class="superskill-desc reveal reveal-delay-2">
+        Способность одновременно генерировать яркие, нестандартные идеи — и зажигать ими других людей. Openness даёт контент. Social Boldness, Assertiveness и Warmth дают канал доставки. Этот навык невозможно «выучить на курсах» — он встроен в архитектуру личности.
+      </p>
     </div>
   </div>
-</section>
 
-<!-- ═══ KEY NUMBERS ═══ -->
-<div class="numbers-strip">
-  <div class="numbers-inner">
-    <div class="number-item">
-      <div class="value">100<span class="unit">%</span></div>
-      <div class="label">Altruism</div>
+  <!-- ═══ CORE TALENTS ═══ -->
+  <section id="talents" aria-labelledby="talents-title">
+    <div class="section-label reveal">Ядро таланта</div>
+    <h2 class="section-title reveal reveal-delay-1" id="talents-title">Пять <em>фундаментальных</em> характеристик</h2>
+
+    <div class="talent-grid">
+      <div class="talent-card reveal reveal-delay-1">
+        <div class="number">01</div>
+        <h3>Творческий интеллект с эстетическим вкусом</h3>
+        <p>Видит мир через призму формы, красоты и идей. Генерирует нестандартные решения и облекает их в привлекательную форму.</p>
+        <div class="tags">
+          <span class="tag">Aesthetics 92%</span>
+          <span class="tag gold">Creativity 4.8</span>
+          <span class="tag">Openness 77%</span>
+        </div>
+      </div>
+
+      <div class="talent-card reveal reveal-delay-2">
+        <div class="number">02</div>
+        <h3>Социальная смелость и лидерское влияние</h3>
+        <p>Не боится аудитории, легко берёт слово и естественно стремится к лидерской позиции. Влияет через энергию и убеждение.</p>
+        <div class="tags">
+          <span class="tag gold">Social Boldness 4.8</span>
+          <span class="tag">Assertiveness 70%</span>
+          <span class="tag coral">Power 5.3</span>
+        </div>
+      </div>
+
+      <div class="talent-card reveal reveal-delay-3">
+        <div class="number">03</div>
+        <h3>Эмпатия, направленная на действие</h3>
+        <p>Не абстрактная «любовь к человечеству», а конкретная, адресная помощь тем, кто рядом. Вдохновляет, развивает и поддерживает.</p>
+        <div class="tags">
+          <span class="tag coral">Altruism 100%</span>
+          <span class="tag">Warmth 75%</span>
+          <span class="tag gold">Social 18</span>
+        </div>
+      </div>
+
+      <div class="talent-card reveal reveal-delay-4">
+        <div class="number">04</div>
+        <h3>Потребность в стимуляции и новизне</h3>
+        <p>Быстро теряет интерес к освоенному. Нуждается в постоянной подпитке новыми задачами, проектами, средами. Это мотор.</p>
+        <div class="tags">
+          <span class="tag coral">Stimulation 5.7</span>
+          <span class="tag">Actions 82%</span>
+          <span class="tag gold">Prudence 2.0</span>
+        </div>
+      </div>
+
+      <div class="talent-card reveal reveal-delay-5">
+        <div class="number">05</div>
+        <h3>Аналитическая база выше среднего</h3>
+        <p>IQ 122 — способность работать со сложными концепциями, быстро обучаться и видеть паттерны. Доступ к интеллектуально ёмким профессиям.</p>
+        <div class="tags">
+          <span class="tag">IQ 122</span>
+          <span class="tag">Ideas 82%</span>
+          <span class="tag gold">51/60 Raven's</span>
+        </div>
+      </div>
     </div>
-    <div class="number-item">
-      <div class="value">92<span class="unit">%</span></div>
-      <div class="label">Aesthetics</div>
-    </div>
-    <div class="number-item">
-      <div class="value">5.7</div>
-      <div class="label">Stimulation</div>
-    </div>
-    <div class="number-item">
-      <div class="value">4.8</div>
-      <div class="label">Social Boldness</div>
-    </div>
-    <div class="number-item">
-      <div class="value">122</div>
-      <div class="label">IQ Equivalent</div>
-    </div>
-    <div class="number-item">
-      <div class="value">SAE</div>
-      <div class="label">Holland Code</div>
+  </section>
+
+  <!-- ═══ KEY NUMBERS ═══ -->
+  <div class="numbers-strip" id="numbers">
+    <div class="numbers-inner">
+      <div class="number-item reveal">
+        <div class="value"><span class="count-up" data-target="100">0</span><span class="unit">%</span></div>
+        <div class="label">Altruism</div>
+      </div>
+      <div class="number-item reveal reveal-delay-1">
+        <div class="value"><span class="count-up" data-target="92">0</span><span class="unit">%</span></div>
+        <div class="label">Aesthetics</div>
+      </div>
+      <div class="number-item reveal reveal-delay-2">
+        <div class="value"><span class="count-up" data-target="5.7" data-decimals="1">0</span></div>
+        <div class="label">Stimulation</div>
+      </div>
+      <div class="number-item reveal reveal-delay-3">
+        <div class="value"><span class="count-up" data-target="4.8" data-decimals="1">0</span></div>
+        <div class="label">Social Boldness</div>
+      </div>
+      <div class="number-item reveal reveal-delay-4">
+        <div class="value"><span class="count-up" data-target="122">0</span></div>
+        <div class="label">IQ Equivalent</div>
+      </div>
+      <div class="number-item reveal reveal-delay-5">
+        <div class="value">SAE</div>
+        <div class="label">Holland Code</div>
+      </div>
     </div>
   </div>
-</div>
 
-<!-- ═══ BEAUTIFUL PARADOXES ═══ -->
-<section>
-  <div class="section-label">Красота противоречий</div>
-  <h2 class="section-title">Парадоксы, которые делают её <em>уникальной</em></h2>
+  <!-- ═══ BEAUTIFUL PARADOXES ═══ -->
+  <section id="paradoxes" aria-labelledby="paradoxes-title">
+    <div class="section-label reveal">Красота противоречий</div>
+    <h2 class="section-title reveal reveal-delay-1" id="paradoxes-title">Парадоксы, которые делают её <em>уникальной</em></h2>
 
-  <div class="paradoxes">
-    <div class="paradox">
-      <div class="paradox-side">Хочу помогать людям<br><small style="color:var(--text-muted)">Altruism 100%, Social 18</small></div>
-      <div class="paradox-connector">— и —</div>
-      <div class="paradox-side">Хочу влиять и зарабатывать<br><small style="color:var(--text-muted)">Power 5.3, Greed Avoidance 1.8</small></div>
-      <div class="paradox-resolution">Не конфликт — формула. Идеальны роли, где помощь людям является бизнесом: коучинг, EdTech, креативные агентства.</div>
+    <div class="paradoxes">
+      <div class="paradox reveal">
+        <div class="paradox-side">Хочу помогать людям<span class="paradox-meta">Altruism 100%, Social 18</span></div>
+        <div class="paradox-connector">— и —</div>
+        <div class="paradox-side">Хочу влиять и зарабатывать<span class="paradox-meta">Power 5.3, Greed Avoidance 1.8</span></div>
+        <div class="paradox-resolution">Не конфликт — формула. Идеальны роли, где помощь людям является бизнесом: коучинг, EdTech, креативные агентства.</div>
+      </div>
+
+      <div class="paradox reveal">
+        <div class="paradox-side">Высочайшая ответственность<span class="paradox-meta">Dutifulness 87%</span></div>
+        <div class="paradox-connector">— и —</div>
+        <div class="paradox-side">Импульсивность и нетерпение<span class="paradox-meta">Prudence 2.0, Self-Discipline 42%</span></div>
+        <div class="paradox-resolution">Нужна внешняя структура при внутренней свободе: дедлайны, обязательства перед конкретными людьми, команда «финишеров».</div>
+      </div>
+
+      <div class="paradox reveal">
+        <div class="paradox-side">Уступает людям легко<span class="paradox-meta">Compliance 87%</span></div>
+        <div class="paradox-connector">— и —</div>
+        <div class="paradox-side">Не терпит бессмысленных правил<span class="paradox-meta">Conformity-Rules 2.7</span></div>
+        <div class="paradox-resolution">Ориентирована на отношения, а не на регламенты. Ей важен человек, а не инструкция.</div>
+      </div>
+
+      <div class="paradox reveal">
+        <div class="paradox-side">Низкая скромность<span class="paradox-meta">Modesty 30%</span></div>
+        <div class="paradox-connector">— и —</div>
+        <div class="paradox-side">Абсолютная щедрость<span class="paradox-meta">Altruism 100%</span></div>
+        <div class="paradox-resolution">Щедро отдаёт другим — но ожидает, что её вклад будет замечен и оценён. Здоровая амбиция.</div>
+      </div>
     </div>
+  </section>
 
-    <div class="paradox">
-      <div class="paradox-side">Высочайшая ответственность<br><small style="color:var(--text-muted)">Dutifulness 87%</small></div>
-      <div class="paradox-connector">— и —</div>
-      <div class="paradox-side">Импульсивность и нетерпение<br><small style="color:var(--text-muted)">Prudence 2.0, Self-Discipline 42%</small></div>
-      <div class="paradox-resolution">Нужна внешняя структура при внутренней свободе: дедлайны, обязательства перед конкретными людьми, команда «финишеров».</div>
+  <!-- ═══ TOP TRAJECTORIES ═══ -->
+  <section id="trajectories" aria-labelledby="trajectories-title">
+    <div class="section-label reveal">Профессиональные траектории</div>
+    <h2 class="section-title reveal reveal-delay-1" id="trajectories-title">Пять направлений <em>максимальной</em> реализации</h2>
+
+    <div class="trajectories">
+      <div class="trajectory reveal">
+        <div class="rank">01</div>
+        <div>
+          <h3>Креативное лидерство и бренд-стратегия</h3>
+          <div class="roles">Creative Director · Brand Strategist · Head of Creative · CCO</div>
+        </div>
+        <div class="trajectory-match">
+          <span class="match-value">88%</span>
+          <div class="match-bar"><div class="match-bar-fill" data-width="88"></div></div>
+        </div>
+      </div>
+
+      <div class="trajectory reveal">
+        <div class="rank">02</div>
+        <div>
+          <h3>Развитие людей и организаций</h3>
+          <div class="roles">Executive Coach · L&D Director · OD Consultant</div>
+        </div>
+        <div class="trajectory-match">
+          <span class="match-value">85%</span>
+          <div class="match-bar"><div class="match-bar-fill" data-width="85"></div></div>
+        </div>
+      </div>
+
+      <div class="trajectory reveal">
+        <div class="rank">03</div>
+        <div>
+          <h3>Креативное предпринимательство</h3>
+          <div class="roles">Founder · Co-Founder · CEO собственного бизнеса</div>
+        </div>
+        <div class="trajectory-match">
+          <span class="match-value">82%</span>
+          <div class="match-bar"><div class="match-bar-fill" data-width="82"></div></div>
+        </div>
+      </div>
+
+      <div class="trajectory reveal">
+        <div class="rank">04</div>
+        <div>
+          <h3>Продюсирование креативных проектов</h3>
+          <div class="roles">Creative Producer · Executive Producer · Event Director</div>
+        </div>
+        <div class="trajectory-match">
+          <span class="match-value">80%</span>
+          <div class="match-bar"><div class="match-bar-fill" data-width="80"></div></div>
+        </div>
+      </div>
+
+      <div class="trajectory reveal">
+        <div class="rank">05</div>
+        <div>
+          <h3>Стратегия в образовании и EdTech</h3>
+          <div class="roles">Education Strategist · Head of Curriculum · EdTech Product Owner</div>
+        </div>
+        <div class="trajectory-match">
+          <span class="match-value">78%</span>
+          <div class="match-bar"><div class="match-bar-fill" data-width="78"></div></div>
+        </div>
+      </div>
     </div>
+  </section>
 
-    <div class="paradox">
-      <div class="paradox-side">Уступает людям легко<br><small style="color:var(--text-muted)">Compliance 87%</small></div>
-      <div class="paradox-connector">— и —</div>
-      <div class="paradox-side">Не терпит бессмысленных правил<br><small style="color:var(--text-muted)">Conformity-Rules 2.7</small></div>
-      <div class="paradox-resolution">Ориентирована на отношения, а не на регламенты. Ей важен человек, а не инструкция.</div>
+  <!-- ═══ BLIND SPOTS ═══ -->
+  <section id="blindspots" aria-labelledby="blindspots-title">
+    <div class="section-label reveal">Зоны внимания</div>
+    <h2 class="section-title reveal reveal-delay-1" id="blindspots-title">Что нужно <em>осознавать</em></h2>
+
+    <div class="blindspots">
+      <div class="blindspot reveal reveal-delay-1">
+        <h4>Импульсивность в решениях</h4>
+        <p>Быстрые решения «на чувстве». Компенсация: правило «24 часов» и «совещательный голос» — 1-2 доверенных человека.</p>
+      </div>
+      <div class="blindspot reveal reveal-delay-2">
+        <h4>Синдром нового проекта</h4>
+        <p>Великолепный старт, потеря энергии в середине. Компенсация: спринты с финишем, делегирование «последней мили».</p>
+      </div>
+      <div class="blindspot reveal reveal-delay-3">
+        <h4>Переоценка сил</h4>
+        <p>Берёт слишком много, обещает оптимистичные сроки. Компенсация: правило «×1.5» и пилотные проекты.</p>
+      </div>
+      <div class="blindspot reveal reveal-delay-4">
+        <h4>Размытые границы</h4>
+        <p>Altruism 100% = неспособность отказать. Компенсация: «бюджет альтруизма» и скрипт мягкого отказа.</p>
+      </div>
     </div>
+  </section>
 
-    <div class="paradox">
-      <div class="paradox-side">Низкая скромность<br><small style="color:var(--text-muted)">Modesty 30%</small></div>
-      <div class="paradox-connector">— и —</div>
-      <div class="paradox-side">Абсолютная щедрость<br><small style="color:var(--text-muted)">Altruism 100%</small></div>
-      <div class="paradox-resolution">Щедро отдаёт другим — но ожидает, что её вклад будет замечен и оценён. Здоровая амбиция.</div>
+  <!-- ═══ NORTH STAR ═══ -->
+  <div class="north-star" id="northstar">
+    <div class="north-star-inner">
+      <div class="star reveal" aria-hidden="true">✦</div>
+      <blockquote class="reveal reveal-delay-1">
+        «Найти пересечение между тем, что зажигает, тем, за что платят, и тем, что создаёт видимую ценность для конкретных людей — и сделать первый оплачиваемый шаг в этом направлении.»
+      </blockquote>
+      <p class="coda reveal reveal-delay-2">
+        Следующий шаг — один. Не пять, не три — один. Выбрать направление, сделать первый звонок, записаться на первый курс. Всё остальное выстроится вокруг этого первого действия.
+      </p>
     </div>
   </div>
-</section>
 
-<!-- ═══ TOP TRAJECTORIES ═══ -->
-<section>
-  <div class="section-label">Профессиональные траектории</div>
-  <h2 class="section-title">Пять направлений <em>максимальной</em> реализации</h2>
-
-  <div class="trajectories">
-    <div class="trajectory">
-      <div class="rank">01</div>
-      <div>
-        <h3>Креативное лидерство и бренд-стратегия</h3>
-        <div class="roles">Creative Director · Brand Strategist · Head of Creative · CCO</div>
-      </div>
-      <div class="match">88%</div>
-    </div>
-
-    <div class="trajectory">
-      <div class="rank">02</div>
-      <div>
-        <h3>Развитие людей и организаций</h3>
-        <div class="roles">Executive Coach · L&D Director · OD Consultant</div>
-      </div>
-      <div class="match">85%</div>
-    </div>
-
-    <div class="trajectory">
-      <div class="rank">03</div>
-      <div>
-        <h3>Креативное предпринимательство</h3>
-        <div class="roles">Founder · Co-Founder · CEO собственного бизнеса</div>
-      </div>
-      <div class="match">82%</div>
-    </div>
-
-    <div class="trajectory">
-      <div class="rank">04</div>
-      <div>
-        <h3>Продюсирование креативных проектов</h3>
-        <div class="roles">Creative Producer · Executive Producer · Event Director</div>
-      </div>
-      <div class="match">80%</div>
-    </div>
-
-    <div class="trajectory">
-      <div class="rank">05</div>
-      <div>
-        <h3>Стратегия в образовании и EdTech</h3>
-        <div class="roles">Education Strategist · Head of Curriculum · EdTech Product Owner</div>
-      </div>
-      <div class="match">78%</div>
-    </div>
-  </div>
-</section>
-
-<!-- ═══ BLIND SPOTS ═══ -->
-<section>
-  <div class="section-label">Зоны внимания</div>
-  <h2 class="section-title">Что нужно <em>осознавать</em></h2>
-
-  <div class="blindspots">
-    <div class="blindspot">
-      <h4>Импульсивность в решениях</h4>
-      <p>Быстрые решения «на чувстве». Компенсация: правило «24 часов» и «совещательный голос» — 1-2 доверенных человека.</p>
-    </div>
-    <div class="blindspot">
-      <h4>Синдром нового проекта</h4>
-      <p>Великолепный старт, потеря энергии в середине. Компенсация: спринты с финишем, делегирование «последней мили».</p>
-    </div>
-    <div class="blindspot">
-      <h4>Переоценка сил</h4>
-      <p>Берёт слишком много, обещает оптимистичные сроки. Компенсация: правило «×1.5» и пилотные проекты.</p>
-    </div>
-    <div class="blindspot">
-      <h4>Размытые границы</h4>
-      <p>Altruism 100% = неспособность отказать. Компенсация: «бюджет альтруизма» и скрипт мягкого отказа.</p>
-    </div>
-  </div>
-</section>
-
-<!-- ═══ NORTH STAR ═══ -->
-<div class="north-star">
-  <div class="north-star-inner">
-    <div class="star">✦</div>
-    <blockquote>
-      «Найти пересечение между тем, что зажигает, тем, за что платят, и тем, что создаёт видимую ценность для конкретных людей — и сделать первый оплачиваемый шаг в этом направлении.»
-    </blockquote>
-    <p class="coda">
-      Следующий шаг — один. Не пять, не три — один. Выбрать направление, сделать первый звонок, записаться на первый курс. Всё остальное выстроится вокруг этого первого действия.
-    </p>
-  </div>
-</div>
+</main>
 
 <footer>
   Навигационная карта потенциала · Maria Atanasov · 2026
 </footer>
+
+<script>
+(function() {
+  'use strict';
+
+  // ─── SCROLL REVEAL (IntersectionObserver) ───
+  const revealElements = document.querySelectorAll('.reveal');
+  const revealObserver = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('revealed');
+        revealObserver.unobserve(entry.target);
+      }
+    });
+  }, {
+    threshold: 0.15,
+    rootMargin: '0px 0px -40px 0px'
+  });
+
+  revealElements.forEach(function(el) {
+    revealObserver.observe(el);
+  });
+
+  // ─── COUNT-UP ANIMATION ───
+  const countElements = document.querySelectorAll('.count-up');
+  let countAnimated = false;
+
+  const countObserver = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting && !countAnimated) {
+        countAnimated = true;
+        animateCounters();
+        countObserver.disconnect();
+      }
+    });
+  }, { threshold: 0.3 });
+
+  var numbersSection = document.getElementById('numbers');
+  if (numbersSection) {
+    countObserver.observe(numbersSection);
+  }
+
+  function animateCounters() {
+    countElements.forEach(function(el) {
+      var target = parseFloat(el.getAttribute('data-target'));
+      var decimals = parseInt(el.getAttribute('data-decimals') || '0', 10);
+      var duration = 1800;
+      var startTime = null;
+
+      function step(timestamp) {
+        if (!startTime) startTime = timestamp;
+        var progress = Math.min((timestamp - startTime) / duration, 1);
+        var eased = 1 - Math.pow(1 - progress, 3); // easeOutCubic
+        var current = eased * target;
+
+        if (decimals > 0) {
+          el.textContent = current.toFixed(decimals);
+        } else {
+          el.textContent = Math.round(current);
+        }
+
+        if (progress < 1) {
+          requestAnimationFrame(step);
+        }
+      }
+
+      requestAnimationFrame(step);
+    });
+  }
+
+  // ─── MATCH BAR ANIMATION ───
+  var matchBars = document.querySelectorAll('.match-bar-fill');
+  var barObserver = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting) {
+        var width = entry.target.getAttribute('data-width');
+        entry.target.style.width = width + '%';
+        barObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.2 });
+
+  matchBars.forEach(function(bar) {
+    barObserver.observe(bar);
+  });
+
+  // ─── DOT NAVIGATION ───
+  var dotNav = document.querySelector('.dot-nav');
+  var dots = document.querySelectorAll('.dot-nav a');
+  var sectionIds = Array.from(dots).map(function(dot) {
+    return dot.getAttribute('href').slice(1);
+  });
+
+  // Show dot nav after scrolling past hero
+  var heroEl = document.getElementById('hero');
+  var navObserver = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting) {
+        dotNav.classList.remove('visible');
+      } else {
+        dotNav.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.5 });
+
+  if (heroEl) {
+    navObserver.observe(heroEl);
+  }
+
+  // Active dot tracking
+  var sectionObserver = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting) {
+        var id = entry.target.id;
+        dots.forEach(function(dot) {
+          dot.classList.toggle('active', dot.getAttribute('href') === '#' + id);
+        });
+      }
+    });
+  }, {
+    threshold: 0,
+    rootMargin: '-40% 0px -55% 0px'
+  });
+
+  sectionIds.forEach(function(id) {
+    var el = document.getElementById(id);
+    if (el) sectionObserver.observe(el);
+  });
+
+  // Smooth scroll for dot nav
+  dots.forEach(function(dot) {
+    dot.addEventListener('click', function(e) {
+      e.preventDefault();
+      var targetId = this.getAttribute('href').slice(1);
+      var targetEl = document.getElementById(targetId);
+      if (targetEl) {
+        targetEl.scrollIntoView({ behavior: 'smooth' });
+      }
+    });
+  });
+
+})();
+</script>
 
 </body>
 </html>
